@@ -16,7 +16,7 @@ available
 [here](https://www.grammaticalframework.org/ipl-book/assignments/assignment2/assignment2.html).
 
 
-## Installation and running
+## Installation and Running
 
 Assuming the operating system is a variant of Ubuntu/Debian GNU/Linux:
 
@@ -66,6 +66,7 @@ You can find more about Clojure [here](https://clojure.org/).
 
 
 ## Limitations
+
 - There is some loss of information about original syntax during AST conversion
   from Java to Clojure. As such, I don't have `printTree` function or something
   similar to print the original source where the error occurred.
