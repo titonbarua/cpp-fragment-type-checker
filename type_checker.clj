@@ -1,4 +1,6 @@
 (ns type-checker
+  "C++ fragment type checker implementation."
+  {:author "Titon Barua <baruat@email.sc.edu>"}
   (:require [clojure.pprint :as pprint]))
 
 (defrecord TypedAST [tree type])
@@ -15,7 +17,6 @@
 (declare new-block)
 (declare empty-env)
 
-
 ;; Used for user friendly error messages.
 (def operator-syntax-map
   {'ETimes "*"
@@ -29,7 +30,6 @@
    'EAnd "&&"
    'EOr  "||"})
 
-
 (def literal-type-map
   {'ETrue 'bool
    'EFalse 'bool
@@ -37,14 +37,12 @@
    'EDouble 'double
    'EString 'string})
 
-
 (def type-token-map
   {'Type_void 'void
    'Type_int 'int
    'Type_double 'double
    'Type_string 'string
    'Type_bool 'bool})
-
 
 (defmulti infer
   (fn [env e]
@@ -77,21 +75,17 @@
         :else
         category))))
 
-
-
 (defmethod infer :literal
   [env e]
   (let [[ctgy value] e
         t            (literal-type-map ctgy)]
     (->TypedAST e t)))
 
-
 (defmethod infer :variable
   [env e]
   (let [[ctgy identifier] e
         t                 (lookup-var env identifier)]
     (->TypedAST e t)))
-
 
 (defmethod infer :binary-arithmatic-operator
   [env e]
@@ -112,7 +106,6 @@
     (let [[_ bt] (check env b t)]
       (->TypedAST (list ctgy at bt) t))))
 
-
 ;; Comparison and (in)equality apply to two operands of the same type,
 ;; which is int, double, string, or bool.
 (defmethod infer :comparison-operator
@@ -127,7 +120,6 @@
     (let [[_ bt] (check env b t)]
       (->TypedAST (list ctgy at bt) 'bool))))
 
-
 ;; Conjunction and disjunction apply to operands of type bool only.
 (defmethod infer :conj-disj-operator
   [env e]
@@ -135,7 +127,6 @@
         [_ at]     (check env a 'bool)
         [_ bt]     (check env b 'bool)]
     (->TypedAST (list ctgy at bt) 'bool)))
-
 
 (defmethod infer :incr-decr-operator
   [env e]
@@ -149,7 +140,6 @@
                       {:type :type-error})))
     (->TypedAST (list ctgy xt) t)))
 
-
 (defmethod infer :expression-assignment
   [env e]
   (let [[ctgy l r] e]
@@ -161,7 +151,6 @@
           t      (:type lt)
           [_ rt] (check env r t)]
       (->TypedAST (list ctgy lt rt) t))))
-
 
 (defmethod infer :function-application
   [env e]
@@ -184,10 +173,9 @@
 
     ;; Type of a function application is the return type of function.
     (->TypedAST (list ctgy
-                       func-id
-                       (vec (map #(infer env %) arg-list)))
-                 return-type)))
-
+                      func-id
+                      (vec (map #(infer env %) arg-list)))
+                return-type)))
 
 (defn check-expression
   [env e t]
@@ -205,12 +193,9 @@
                                 inferred-t)
                         {:type :type-error}))))))
 
-
-
 (defmulti check-statement
   (fn [env statement]
     (first statement)))
-
 
 ;; Handle expression statement.
 (defmethod check-statement 'SExp
@@ -220,7 +205,6 @@
         t        (:type et)]
     (check-expression env e t)
     [env (-> TypedAST (list ctgy et) t)]))
-
 
 ;; Handle variable declaration.
 (defmethod check-statement 'SDecls
@@ -240,7 +224,6 @@
                                        (rest var-names)))))]
         [extended-env, stmt]))))
 
-
 ;; Handle variable initialization.
 (defmethod check-statement 'SInit
   [env stmt]
@@ -249,7 +232,6 @@
         extended-env                   (extend-env env var-name var-type)]
     (check-expression extended-env exp var-type)
     [extended-env stmt]))
-
 
 ;; Handle expression return statement.
 (defmethod check-statement 'SReturn
@@ -261,7 +243,6 @@
     (check-expression env exp return-type)
     [env stmt]))
 
-
 ;; Handle void return statement.
 (defmethod check-statement 'SReturnVoid
   [env stmt]
@@ -271,7 +252,6 @@
                               (name return-type))
                       {:type :type-error})))
     [env stmt]))
-
 
 ;; Handle while loop.
 (defmethod check-statement 'SWhile
@@ -285,7 +265,6 @@
 
     [env stmt]))
 
-
 ;; Handle blocks.
 (defmethod check-statement 'SBlock
   [env stmt]
@@ -293,7 +272,6 @@
         [ctgy statements] stmt]
     (check-statement-list block-env statements)
     [env stmt]))
-
 
 ;; Handle if-else.
 (defmethod check-statement 'SIfElse
@@ -303,7 +281,6 @@
     (check-statement env t-stmt)
     (check-statement env f-stmt)
     [env stmt]))
-
 
 (defn check-statement-list
   [env stmts]
@@ -317,7 +294,6 @@
 
     ;; TODO: Return annotated.
     [altered-env stmts]))
-
 
 (defn check-function-arg-decl-list
   [arg-decl-list]
@@ -336,7 +312,6 @@
       ;; Return a simplified list of tuples of arg type and name.
       (vec (for [[_ [var-type] var-name] arg-decl-list]
              [(type-token-map var-type) var-name])))))
-
 
 (defn check-function-definition
   [env func-def]
@@ -367,7 +342,6 @@
     ;; TODO: Return annotated func def.
     [env func-def]))
 
-
 (declare func-def->type)
 (defn build-ftable
   "Propagate ftable with all the function definitions."
@@ -380,7 +354,6 @@
         env
         (recur (rest func-def-list)
                (extend-env env (first func-def-list)))))))
-
 
 (defn check
   ;; Check program.
@@ -407,7 +380,6 @@
        (check-function-definition env stmts-or-func-def)
        (check-statement-list env stmts-or-func-def)))))
 
-
 ;; Functions related to env modification and lookup.
 ;; ---------------------------------------------------------,
 (defn empty-env
@@ -415,19 +387,16 @@
   {:ftable  {}
    :vtables '()})
 
-
 (defn new-block
   "Enter a new scope."
   [env]
   ;; Add a vtable on top of the stack.
   (update env :vtables #(cons {} %)))
 
-
 (defn func-arg-decl->type
   "Get the type of the function argument declaration."
   [[ctgy [arg-type] arg-name]]
   (type-token-map arg-type))
-
 
 (defn func-def->type
   "Get the type of the function definition."
@@ -437,7 +406,6 @@
         arg-types (vec (map func-arg-decl->type arg-decl-list))]
     (->FuncType arg-types
                 (type-token-map ret-type))))
-
 
 (defn extend-env
   "Extend `env` with variable or function definition."
@@ -462,7 +430,6 @@
                        {:type :type-error}))
        (assoc-in env [:ftable func-name] t)))))
 
-
 (defn lookup-var
   "Find and return type of a variable by looking up vtables."
   [env var-name]
@@ -478,7 +445,6 @@
 
           ;; Lookup on high-level vtables.
           (recur (rest vtables)))))))
-
 
 (defn lookup-func
   "Find and return type of a declared function."

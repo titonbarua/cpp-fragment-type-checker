@@ -1,19 +1,19 @@
 (ns cpp-parser-loader
+  "Functions to load bnfc parsed C++ AST in java class form. The AST is then
+  converted to a clojure map."
+  {:author "Titon Barua <baruat@email.sc.edu>"}
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.pprint :as pprint])
   (:import [cpp Yylex parser]))
 
-
 (defn non-terminal?
   [tree]
   (str/starts-with? (str (type tree)) "class cpp.Absyn"))
 
-
 (defn syntax-list?
   [tree]
   (str/starts-with? (str (type tree)) "class cpp.Absyn.List"))
-
 
 (defn tree-root->symbol
   [node]
@@ -22,7 +22,6 @@
       (last)
       (symbol)))
 
-
 (defn get-fields
   [obj]
   (let [cls    (class obj)
@@ -30,7 +29,6 @@
     (->> fields
          (map #(vector (.getName %) (.get % obj)))
          (into {}))))
-
 
 (defn extract-absyn-tree
   [tree]
@@ -45,14 +43,12 @@
 
     tree))
 
-
 (defn parse-syntax
   [text]
   (let [l          (Yylex. (io/reader (char-array text)))
         p          (parser. l)
         parse-tree (.pProgram p)]
     (doall (extract-absyn-tree parse-tree))))
-
 
 (comment
   (def some-syntax

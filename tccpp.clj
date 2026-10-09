@@ -1,7 +1,7 @@
 (ns tccpp
-  (:require [clojure.pprint :refer [pprint]]
-
-            [cpp-parser-loader :refer [parse-syntax]]
+  "C++ fragment type checker CLI program."
+  {:author "Titon Barua <baruat@email.sc.edu>"}
+  (:require [cpp-parser-loader :refer [parse-syntax]]
             [type-checker :refer [check]]))
 
 (def HELP-MSG "USAGE: clj -M -m tcpp.clj <cpp-fragment-filename>")
