@@ -2,17 +2,17 @@
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.pprint :as pprint])
-  (:import [CPP Yylex parser]))
+  (:import [cpp Yylex parser]))
 
 
 (defn non-terminal?
   [tree]
-  (str/starts-with? (str (type tree)) "class CPP.Absyn"))
+  (str/starts-with? (str (type tree)) "class cpp.Absyn"))
 
 
 (defn syntax-list?
   [tree]
-  (str/starts-with? (str (type tree)) "class CPP.Absyn.List"))
+  (str/starts-with? (str (type tree)) "class cpp.Absyn.List"))
 
 
 (defn tree-root->symbol
