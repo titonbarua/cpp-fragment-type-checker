@@ -1,6 +1,6 @@
 (ns cpp-parser-loader
   "Functions to load bnfc parsed C++ AST in java class form. The AST is then
-  converted to a clojure map."
+  converted to a tree as a nested Clojure list."
   {:author "Titon Barua <baruat@email.sc.edu>"}
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
