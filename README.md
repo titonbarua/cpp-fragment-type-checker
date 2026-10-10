@@ -117,7 +117,7 @@ Expression 'b'  should have type int, instead of type string
   4 of the book. Initially I thought about writing an annotated type-checker
   which will augment the syntax tree with type information. I coudn't follow
   through due to time constraints.
-- The `tccpp.clj` reads a filename from standard output, parses the syntax and
+- The `tccpp.clj` reads a filename from standard input, parses the syntax and
   checks it.
 - All the `check-*` variant functions in `type_checker.clj` also returns the
   `env`. This is in contrast to the book. As Clojure is a functional language,
@@ -141,7 +141,7 @@ was a blessing in this case as I could easily convert the AST from Java to
 Clojure.
 
 Being a Lisp, Clojure has excellant API for nested data structure manipulation,
-making the whole affair simpler. I have some prior experience with Clojure which
+making the whole affair simpler. I had some prior experience with Clojure which
 was also a deciding factor.
 
 You can find more about Clojure [here](https://clojure.org/).
