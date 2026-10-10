@@ -8,7 +8,7 @@
 
 (defn -main [& args]
   (let [source-file (first args)]
-    (println "\n\n+============================================================")
+    (println "+============================================================")
     (printf "| Checking %s ...\n" source-file)
     (println "+------------------------------------------------------------")
     (try
@@ -22,10 +22,10 @@
       (catch Exception e
         (let [data (ex-data e)]
           (if (= (:type data) :type-error)
-            (do (println "TYPE ERROR\n")
+            (do (println "TYPE ERROR")
                 (println (ex-message e)))
 
             ;; Assuming all other errors are of type syntax error
             ;; with tremendous faith in our own application. :-)
-            (do (println "SYNTAX ERROR\n")
+            (do (println "SYNTAX ERROR")
                 (println (ex-message e)))))))))

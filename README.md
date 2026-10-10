@@ -33,20 +33,80 @@ Assuming the operating system is a variant of Ubuntu/Debian GNU/Linux:
 - To check all samples, just run `make`
 
 
-## What is Clojure and Why
+## Expected Output
 
-Clojure is a modern Lisp variant with focus on immutable data-structures and
-efficient parallel computation. It runs on top of quite a lot of VM's - mainly
-JVM, but also - Javascript, ErlangVM and Dotnet CLR. Interoperability with Java
-was a blessing in this case as I could easily convert the AST from Java to
-Clojure.
+```
++============================================================
+| Checking ./samples/argument_conflict.cc ...
++------------------------------------------------------------
+TYPE ERROR
+Multiple function argument with same name: x
++============================================================
+| Checking ./samples/bad.cc ...
++------------------------------------------------------------
+TYPE ERROR
+Expression 'c'  should have type bool, instead of type double
++============================================================
+| Checking ./samples/function_application_type_error.cc ...
++------------------------------------------------------------
+TYPE ERROR
+Expression (EPlus (EId "x") (EId "y"))  should have type int, instead of type double
++============================================================
+| Checking ./samples/function_redefinition.cc ...
++------------------------------------------------------------
+TYPE ERROR
+Function add is already defined
++============================================================
+| Checking ./samples/good.cc ...
++------------------------------------------------------------
+OK
 
-Being a Lisp, Clojure has excellant API for nested data structure manipulation,
-making the whole affair simpler. I have some prior experience with Clojure which
-was also a deciding factor.
++============================================================
+| Checking ./samples/invalid_assignment.cc ...
++------------------------------------------------------------
+TYPE ERROR
+Expression 'hello'  should have type int, instead of type string
++============================================================
+| Checking ./samples/invalid_if_cond.cc ...
++------------------------------------------------------------
+TYPE ERROR
+Expression 'hello'  should have type bool, instead of type string
++============================================================
+| Checking ./samples/nested_scopes.cc ...
++------------------------------------------------------------
+OK
 
-You can find more about Clojure [here](https://clojure.org/).
-
++============================================================
+| Checking ./samples/return_mismatch.cc ...
++------------------------------------------------------------
+TYPE ERROR
+Expression '444'  should have type int, instead of type string
++============================================================
+| Checking ./samples/return_value_missing.cc ...
++------------------------------------------------------------
+TYPE ERROR
+Return statement missing value of type int
++============================================================
+| Checking ./samples/undefined_function.cc ...
++------------------------------------------------------------
+TYPE ERROR
+Reference to undeclared function: add
++============================================================
+| Checking ./samples/undefined_var.cc ...
++------------------------------------------------------------
+TYPE ERROR
+Reference to undeclared var: u
++============================================================
+| Checking ./samples/var_redefinition.cc ...
++------------------------------------------------------------
+TYPE ERROR
+Variable x is already defined in current scope.
++============================================================
+| Checking ./samples/wrong_addition.cc ...
++------------------------------------------------------------
+TYPE ERROR
+Expression 'b'  should have type int, instead of type string
+```
 
 ## Code Guide
 
@@ -70,7 +130,23 @@ You can find more about Clojure [here](https://clojure.org/).
 - There is some loss of information about original syntax during AST conversion
   from Java to Clojure. As such, I don't have `printTree` function or something
   similar to print the original source where the error occurred.
-  
+ 
+
+## What is Clojure and Why
+
+Clojure is a modern Lisp variant with focus on immutable data-structures and
+efficient parallel computation. It runs on top of quite a lot of VM's - mainly
+JVM, but also - Javascript, ErlangVM and Dotnet CLR. Interoperability with Java
+was a blessing in this case as I could easily convert the AST from Java to
+Clojure.
+
+Being a Lisp, Clojure has excellant API for nested data structure manipulation,
+making the whole affair simpler. I have some prior experience with Clojure which
+was also a deciding factor.
+
+You can find more about Clojure [here](https://clojure.org/).
+
+ 
 ## License
 
 Copyright © 2026 Titon Barua
